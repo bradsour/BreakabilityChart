@@ -792,6 +792,29 @@ export function updateMarker() {
     }
 }
 
+export function setMassResistance(mass, resistance) {
+    const massInput = document.getElementById('massInput');
+    const resistanceInput = document.getElementById('resistanceInput');
+    if (!massInput || !resistanceInput) return;
+
+    if (mass !== undefined && mass !== null && !isNaN(Number(mass))) {
+        massInput.value = Number(mass);
+    }
+    if (resistance !== undefined && resistance !== null && !isNaN(Number(resistance))) {
+        resistanceInput.value = Number(resistance);
+    }
+    updateMarker();
+}
+
+export function getMassResistance() {
+    const massInput = document.getElementById('massInput');
+    const resistanceInput = document.getElementById('resistanceInput');
+    return {
+        mass: massInput ? parseFloat(massInput.value) : NaN,
+        resistance: resistanceInput ? parseFloat(resistanceInput.value) : NaN
+    };
+}
+
 function calculateRequiredPowerDisplay(mass, resistance) {
     const powerDisplay = document.getElementById('requiredPowerDisplay');
     if (!powerDisplay || !selectedLaserheads || selectedLaserheads.length === 0) {

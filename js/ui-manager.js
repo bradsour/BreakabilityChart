@@ -12,7 +12,7 @@ import {
     renderDisplayOptions
 } from './module-manager.js';
 import { toggleModule } from './laserhead-manager.js';
-import { updateMarker, updateBreakabilityChart, updateChartColors } from './chart-manager.js';
+import { updateMarker, updateBreakabilityChart, updateChartColors, setMassResistance, getMassResistance } from './chart-manager.js';
 import { clearAllData } from './storage-manager.js';
 
 export function equalizeCardDimensions(cards) {
@@ -134,9 +134,9 @@ export function setupLaserheadButtons() {
 }
 
 export function setupDarkModeToggle() {
-    const toggleBtn = document.getElementById("darkModeToggle");
+    const toggleInput = document.getElementById("darkModeToggle");
     
-    if (!toggleBtn) {
+    if (!toggleInput) {
         console.warn('Dark mode toggle button not found');
         return;
     }
@@ -145,16 +145,13 @@ export function setupDarkModeToggle() {
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
     if (isDarkMode) {
         document.body.classList.add('dark-mode');
-        toggleBtn.textContent = '☀️';
+        toggleInput.checked = true;
         updateUexLogo(true);
     }
     
-    toggleBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        const isNowDark = document.body.classList.contains('dark-mode');
-        
-        // Update button icon
-        toggleBtn.textContent = isNowDark ? '☀️' : '🌙';
+    toggleInput.addEventListener('change', () => {
+        const isNowDark = toggleInput.checked;
+        document.body.classList.toggle('dark-mode', isNowDark);
         
         // Save preference to localStorage
         localStorage.setItem('darkMode', isNowDark);
@@ -195,4 +192,6 @@ window.showModuleSelection = showModuleSelection;
 window.removeModule = removeModule;
 window.toggleModule = toggleModule;
 window.updateMarker = updateMarker;
+window.setMassResistance = setMassResistance;
+window.getMassResistance = getMassResistance;
 window.injectFooterToTabs = injectFooterToTabs;

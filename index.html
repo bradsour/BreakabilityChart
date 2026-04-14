@@ -8,7 +8,13 @@
   <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
 </head>
 <body>
-  <button id="darkModeToggle" class="dark-mode-toggle">🌙</button>
+  <button id="settingsBtn" class="settings-toggle" aria-label="Settings">
+    <span class="settings-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" class="settings-svg" role="presentation">
+        <path d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8zm8 3.4c0-.4 0-.8-.1-1.1l2.1-1.6-2-3.4-2.5 1a7.6 7.6 0 0 0-1.9-1.1l-.4-2.7H9.8l-.4 2.7c-.7.3-1.3.7-1.9 1.1l-2.5-1-2 3.4 2.1 1.6c0 .4-.1.8-.1 1.1s0 .8.1 1.1L3 14.7l2 3.4 2.5-1c.6.5 1.2.8 1.9 1.1l.4 2.7h4.1l.4-2.7c.7-.3 1.3-.7 1.9-1.1l2.5 1 2-3.4-2.1-1.6c.1-.3.1-.7.1-1.1z" fill="currentColor"/>
+      </svg>
+    </span>
+  </button>
   <div class="tabs">
     <button class="tab-button active" data-tab="mining-laser">Mining Laser Setup</button>
     <button class="tab-button" data-tab="breakability">Breakability Chart</button>
@@ -29,24 +35,63 @@
         <canvas id="miningChart"></canvas>
     </div>
     <div class="chart-controls">
-        <div class="gadget-selector">
-            <label for="gadgetSelect">Gadget:</label>
-            <select id="gadgetSelect">
-                <option value="none">None</option>
-            </select>
+        <div class="chart-fields">
+            <div class="gadget-selector">
+                <label for="gadgetSelect">Gadget:</label>
+                <select id="gadgetSelect">
+                    <option value="none">None</option>
+                </select>
+            </div>
+            <div class="marker-inputs">
+                <div class="input-group">
+                    <label for="massInput">Mass:</label>
+                    <input type="number" id="massInput" step="0.1" min="0" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label for="resistanceInput" id="resistanceLabel">Base Resistance (%):</label>
+                    <input type="number" id="resistanceInput" step="0.1" min="0" max="100" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label>Required Power:</label>
+                    <div id="requiredPowerDisplay">-</div>
+                </div>
+            </div>
         </div>
-        <div class="marker-inputs">
-            <div class="input-group">
-                <label for="massInput">Mass:</label>
-                <input type="number" id="massInput" step="0.1" min="0" placeholder="0">
-            </div>
-            <div class="input-group">
-                <label for="resistanceInput" id="resistanceLabel">Base Resistance (%):</label>
-                <input type="number" id="resistanceInput" step="0.1" min="0" max="100" placeholder="0">
-            </div>
-            <div class="input-group">
-                <label>Required Power:</label>
-                <div id="requiredPowerDisplay">-</div>
+        <div id="scanPanel" class="scan-panel collapsed">
+            <button id="scanPanelToggle" class="scan-panel-toggle" type="button" aria-label="Scan Controls" aria-expanded="false">
+                <span class="scan-panel-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" class="scan-panel-svg" role="presentation">
+                    <path d="M9 4l1.5 2h3L15 4h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3zm3 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" fill="currentColor"/>
+                  </svg>
+                </span>
+            </button>
+            <div class="scan-panel-content">
+                <div class="scan-panel-title">Scan Preview Controls</div>
+                <div class="scan-preview-row">
+                    <div class="scan-live-stack">
+                        <div class="scan-controls">
+                            <button id="selectGameWindowBtn">Select Game Window</button>
+                            <button id="toggleCropPreviewBtn" disabled>Show Crop Preview</button>
+                            <button id="resetCropViewBtn" disabled>Reset View</button>
+                        </div>
+                        <div id="captureContainer" class="capture-container hidden">
+                            <video id="captureVideo" class="capture-video" muted playsinline></video>
+                            <div id="captureOverlay" class="capture-overlay">
+                                <div id="cropBox" class="crop-box">
+                                  <div id="cropResizeHandle" class="crop-resize-handle"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="cropPreviewContainer" class="capture-container hidden">
+                            <canvas id="cropLiveCanvas" class="crop-live-canvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="scan-capture">
+                        <button id="scanHudBtn" disabled>Scan HUD</button>
+                        <div id="scanStatus" class="scan-status">Ready.</div>
+                        <img id="scanPreview" class="scan-preview hidden" alt="Scan preview">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -153,6 +198,64 @@
         <button class="tierFilter" data-tier="3">Tier 3</button>
       </div>
       <div id="moduleCards"></div>
+    </div>
+  </div>
+
+  <!-- Settings Drawer -->
+  <div id="settingsModal" class="hidden">
+    <div class="modal-content settings-modal">
+      <button id="closeSettingsBtn">✕</button>
+      <h3>Settings &amp; Provider</h3>
+      <div class="settings-form">
+        <div class="settings-category">
+          <div class="settings-category-title">General</div>
+          <label class="settings-inline settings-theme-toggle">
+            <input id="darkModeToggle" type="checkbox">
+            <span>Dark mode</span>
+          </label>
+        </div>
+        <div class="settings-category">
+          <div class="settings-category-title">AI Settings</div>
+        <label class="settings-field">
+          <span>Provider</span>
+          <select id="providerSelect">
+            <option value="ollama">Ollama (Local)</option>
+            <option value="openai">OpenAI (Cloud)</option>
+            <option value="gemini">Gemini (Cloud)</option>
+          </select>
+        </label>
+        <div id="ollamaFields">
+          <label class="settings-field">
+            <span>Ollama Endpoint</span>
+            <input id="endpointInput" type="text" placeholder="http://10.10.10.31:11434">
+          </label>
+        </div>
+        <label class="settings-field">
+          <span>Model Name</span>
+          <input id="modelInput" type="text" placeholder="llama3.2-vision">
+          <select id="modelSelect" class="settings-select hidden"></select>
+          <div id="modelHint" class="settings-hint">Enter a model name or load from Ollama.</div>
+        </label>
+        <div id="apiKeyField">
+          <label class="settings-field">
+            <span>API Key</span>
+            <input id="apiKeyInput" type="password" placeholder="Your API key">
+          </label>
+          <label class="settings-inline">
+            <input id="showApiKeyToggle" type="checkbox">
+            <span>Show API key</span>
+          </label>
+        </div>
+        <button id="testSettingsBtn">Test Connection</button>
+        <p id="settingsStatus" class="settings-status" data-status="ok">
+          Settings are stored locally in your browser.
+        </p>
+        </div>
+      </div>
+      <div class="settings-actions">
+        <button id="saveSettingsBtn" class="settings-save">Save Settings</button>
+        <button id="resetSettingsBtn" class="btn-delete">Reset Defaults</button>
+      </div>
     </div>
   </div>
 

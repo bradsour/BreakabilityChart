@@ -9,7 +9,10 @@ const STORAGE_KEYS = {
     ACTIVE_MODULE_TYPES: 'breakabilityChart_activeModuleTypes',
     ACTIVE_TIERS: 'breakabilityChart_activeTiers',
     SELECTED_GADGET: 'breakabilityChart_selectedGadget',
-    OPERATOR_SEAT_MODE: 'breakabilityChart_operatorSeatMode'
+    OPERATOR_SEAT_MODE: 'breakabilityChart_operatorSeatMode',
+    AI_SETTINGS: 'breakabilityChart_aiSettings',
+    AI_CONFIG: 'breakabilityChart_aiConfig',
+    CROP_CONFIG: 'breakabilityChart_cropConfig'
 };
 
 /**
@@ -174,6 +177,48 @@ export function saveOperatorSeatMode(mode) {
  */
 export function loadOperatorSeatMode() {
     return loadFromStorage(STORAGE_KEYS.OPERATOR_SEAT_MODE);
+}
+
+/**
+ * Save AI settings
+ */
+export function saveAISettings(settings) {
+    saveToStorage(STORAGE_KEYS.AI_SETTINGS, settings);
+}
+
+/**
+ * Load AI settings
+ */
+export function loadAISettings() {
+    return loadFromStorage(STORAGE_KEYS.AI_SETTINGS);
+}
+
+/**
+ * Save AI config
+ */
+export function saveAIConfig(config) {
+    saveToStorage(STORAGE_KEYS.AI_CONFIG, config);
+}
+
+/**
+ * Load AI config
+ */
+export function loadAIConfig() {
+    return loadFromStorage(STORAGE_KEYS.AI_CONFIG);
+}
+
+/**
+ * Save crop config
+ */
+export function saveCropConfig(config) {
+    saveToStorage(STORAGE_KEYS.CROP_CONFIG, config);
+}
+
+/**
+ * Load crop config
+ */
+export function loadCropConfig() {
+    return loadFromStorage(STORAGE_KEYS.CROP_CONFIG);
 }
 
 /**
