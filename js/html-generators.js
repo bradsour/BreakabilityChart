@@ -1,3 +1,10 @@
+/*
+ * The following code is derived from work by mort13.
+ * Copyright (c) 2026 mort13
+ * Licensed under the MIT License. 
+ * Note: This file has been modified from its original version.
+ */
+
 // Pure HTML generation functions - no DOM manipulation or calculations
 import { cleanLaserName, getUnit, MODULE_ATTRIBUTE_ORDER } from './data-manager.js';
 import { roundAndFormatValue } from './calculations.js';

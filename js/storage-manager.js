@@ -1,3 +1,10 @@
+/*
+ * The following code is derived from work by mort13.
+ * Copyright (c) 2026 mort13
+ * Licensed under the MIT License. 
+ * Note: This file has been modified from its original version.
+ */
+
 // LocalStorage management for persisting user data
 
 const STORAGE_KEYS = {

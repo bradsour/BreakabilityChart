@@ -1,7 +1,8 @@
 /*
  * The following code is derived from work by mort13.
  * Copyright (c) 2026 mort13
- * Licensed under the MIT License. See the LICENSE-THIRD-PARTY.txt file in the project root for full license information.
+ * Licensed under the MIT License. 
+ * Note: This file has been modified from its original version.
  */
 
 import { loadMiningData } from './data-manager.js';

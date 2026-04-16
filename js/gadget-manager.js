@@ -1,3 +1,10 @@
+/*
+ * The following code is derived from work by mort13.
+ * Copyright (c) 2026 mort13
+ * Licensed under the MIT License. 
+ * Note: This file has been modified from its original version.
+ */
+
 import { miningData } from './data-manager.js';
 import { updateBreakabilityChart, updateMarker } from './chart-manager.js';
 import { saveSelectedGadget, loadSelectedGadgetId } from './storage-manager.js';
